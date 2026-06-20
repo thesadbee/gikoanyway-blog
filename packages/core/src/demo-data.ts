@@ -1,17 +1,15 @@
 import type { Asset, Comment, Post, Series, SiteSettings, Tag } from "./types";
 
 export const siteSettings: SiteSettings = {
-  name: "01MVP Blog Starter",
-  description:
-    "A Cloudflare-native personal site for articles, videos, durable notes, and API-assisted publishing.",
-  url: "https://your-domain.example",
-  authorName: "01MVP",
-  authorBio:
-    "Builder notes, product essays, and durable personal knowledge on an edge-native publishing stack.",
+  name: "GIKO-Anyway",
+  description: "giko 的个人博客——技术、思考与日常。",
+  url: "https://gikoanyway.top",
+  authorName: "giko",
+  authorBio: "写代码，也写生活。",
   avatarUrl: "/og-default.svg",
   defaultOgImage: "/og-default.svg",
   socialLinks: [
-    { label: "GitHub", href: "https://github.com/01mvp/blog-starter" },
+    { label: "GitHub", href: "https://github.com/thesadbee/gikoanyway-blog" },
     { label: "RSS", href: "/rss.xml" },
   ],
   navigation: [

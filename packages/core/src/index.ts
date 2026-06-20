@@ -45,6 +45,11 @@ export type {
   Tag,
   ThemePreset,
   UserRole,
+  LandscapePhoto,
+  FoodPhoto,
+  FoodSuggestion,
+  LifeGoal,
+  GithubProject,
 } from "./types";
 
 export function resolveLocale(locale?: string): SupportedLocale {

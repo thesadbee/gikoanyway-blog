@@ -33,6 +33,8 @@ import { Route as ApiSiteRouteImport } from './routes/api/site'
 import { Route as ApiSeriesRouteImport } from './routes/api/series'
 import { Route as ApiSearchRouteImport } from './routes/api/search'
 import { Route as ApiPostsRouteImport } from './routes/api/posts'
+import { Route as ApiGikoHomepageRouteImport } from './routes/api/giko-homepage'
+import { Route as ApiFoodSuggestionsRouteImport } from './routes/api/food-suggestions'
 import { Route as ApiExportRouteImport } from './routes/api/export'
 import { Route as ApiCommentsRouteImport } from './routes/api/comments'
 import { Route as ApiBackupsRouteImport } from './routes/api/backups'
@@ -84,6 +86,7 @@ import { Route as AuthAdminUsersRouteImport } from './routes/_auth/admin/users'
 import { Route as AuthAdminSettingsRouteImport } from './routes/_auth/admin/settings'
 import { Route as AuthAdminSeriesRouteImport } from './routes/_auth/admin/series'
 import { Route as AuthAdminPostsRouteImport } from './routes/_auth/admin/posts'
+import { Route as AuthAdminGikoHomepageRouteImport } from './routes/_auth/admin/giko-homepage'
 import { Route as AuthAdminCommentsRouteImport } from './routes/_auth/admin/comments'
 import { Route as AuthAdminAssetsRouteImport } from './routes/_auth/admin/assets'
 import { Route as AuthAdminPostsIndexRouteImport } from './routes/_auth/admin/posts/index'
@@ -221,6 +224,16 @@ const ApiSearchRoute = ApiSearchRouteImport.update({
 const ApiPostsRoute = ApiPostsRouteImport.update({
   id: '/api/posts',
   path: '/api/posts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiGikoHomepageRoute = ApiGikoHomepageRouteImport.update({
+  id: '/api/giko-homepage',
+  path: '/api/giko-homepage',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiFoodSuggestionsRoute = ApiFoodSuggestionsRouteImport.update({
+  id: '/api/food-suggestions',
+  path: '/api/food-suggestions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiExportRoute = ApiExportRouteImport.update({
@@ -481,6 +494,11 @@ const AuthAdminPostsRoute = AuthAdminPostsRouteImport.update({
   path: '/posts',
   getParentRoute: () => AuthAdminRouteRoute,
 } as any)
+const AuthAdminGikoHomepageRoute = AuthAdminGikoHomepageRouteImport.update({
+  id: '/giko-homepage',
+  path: '/giko-homepage',
+  getParentRoute: () => AuthAdminRouteRoute,
+} as any)
 const AuthAdminCommentsRoute = AuthAdminCommentsRouteImport.update({
   id: '/comments',
   path: '/comments',
@@ -609,6 +627,8 @@ export interface FileRoutesByFullPath {
   '/api/backups': typeof ApiBackupsRoute
   '/api/comments': typeof ApiCommentsRouteWithChildren
   '/api/export': typeof ApiExportRoute
+  '/api/food-suggestions': typeof ApiFoodSuggestionsRoute
+  '/api/giko-homepage': typeof ApiGikoHomepageRoute
   '/api/posts': typeof ApiPostsRouteWithChildren
   '/api/search': typeof ApiSearchRoute
   '/api/series': typeof ApiSeriesRouteWithChildren
@@ -624,6 +644,7 @@ export interface FileRoutesByFullPath {
   '/tags/': typeof TagsIndexRoute
   '/admin/assets': typeof AuthAdminAssetsRoute
   '/admin/comments': typeof AuthAdminCommentsRoute
+  '/admin/giko-homepage': typeof AuthAdminGikoHomepageRoute
   '/admin/posts': typeof AuthAdminPostsRouteWithChildren
   '/admin/series': typeof AuthAdminSeriesRoute
   '/admin/settings': typeof AuthAdminSettingsRoute
@@ -702,6 +723,8 @@ export interface FileRoutesByTo {
   '/api/backups': typeof ApiBackupsRoute
   '/api/comments': typeof ApiCommentsRouteWithChildren
   '/api/export': typeof ApiExportRoute
+  '/api/food-suggestions': typeof ApiFoodSuggestionsRoute
+  '/api/giko-homepage': typeof ApiGikoHomepageRoute
   '/api/posts': typeof ApiPostsRouteWithChildren
   '/api/search': typeof ApiSearchRoute
   '/api/series': typeof ApiSeriesRouteWithChildren
@@ -717,6 +740,7 @@ export interface FileRoutesByTo {
   '/tags': typeof TagsIndexRoute
   '/admin/assets': typeof AuthAdminAssetsRoute
   '/admin/comments': typeof AuthAdminCommentsRoute
+  '/admin/giko-homepage': typeof AuthAdminGikoHomepageRoute
   '/admin/series': typeof AuthAdminSeriesRoute
   '/admin/settings': typeof AuthAdminSettingsRoute
   '/admin/users': typeof AuthAdminUsersRoute
@@ -799,6 +823,8 @@ export interface FileRoutesById {
   '/api/backups': typeof ApiBackupsRoute
   '/api/comments': typeof ApiCommentsRouteWithChildren
   '/api/export': typeof ApiExportRoute
+  '/api/food-suggestions': typeof ApiFoodSuggestionsRoute
+  '/api/giko-homepage': typeof ApiGikoHomepageRoute
   '/api/posts': typeof ApiPostsRouteWithChildren
   '/api/search': typeof ApiSearchRoute
   '/api/series': typeof ApiSeriesRouteWithChildren
@@ -814,6 +840,7 @@ export interface FileRoutesById {
   '/tags/': typeof TagsIndexRoute
   '/_auth/admin/assets': typeof AuthAdminAssetsRoute
   '/_auth/admin/comments': typeof AuthAdminCommentsRoute
+  '/_auth/admin/giko-homepage': typeof AuthAdminGikoHomepageRoute
   '/_auth/admin/posts': typeof AuthAdminPostsRouteWithChildren
   '/_auth/admin/series': typeof AuthAdminSeriesRoute
   '/_auth/admin/settings': typeof AuthAdminSettingsRoute
@@ -896,6 +923,8 @@ export interface FileRouteTypes {
     | '/api/backups'
     | '/api/comments'
     | '/api/export'
+    | '/api/food-suggestions'
+    | '/api/giko-homepage'
     | '/api/posts'
     | '/api/search'
     | '/api/series'
@@ -911,6 +940,7 @@ export interface FileRouteTypes {
     | '/tags/'
     | '/admin/assets'
     | '/admin/comments'
+    | '/admin/giko-homepage'
     | '/admin/posts'
     | '/admin/series'
     | '/admin/settings'
@@ -989,6 +1019,8 @@ export interface FileRouteTypes {
     | '/api/backups'
     | '/api/comments'
     | '/api/export'
+    | '/api/food-suggestions'
+    | '/api/giko-homepage'
     | '/api/posts'
     | '/api/search'
     | '/api/series'
@@ -1004,6 +1036,7 @@ export interface FileRouteTypes {
     | '/tags'
     | '/admin/assets'
     | '/admin/comments'
+    | '/admin/giko-homepage'
     | '/admin/series'
     | '/admin/settings'
     | '/admin/users'
@@ -1085,6 +1118,8 @@ export interface FileRouteTypes {
     | '/api/backups'
     | '/api/comments'
     | '/api/export'
+    | '/api/food-suggestions'
+    | '/api/giko-homepage'
     | '/api/posts'
     | '/api/search'
     | '/api/series'
@@ -1100,6 +1135,7 @@ export interface FileRouteTypes {
     | '/tags/'
     | '/_auth/admin/assets'
     | '/_auth/admin/comments'
+    | '/_auth/admin/giko-homepage'
     | '/_auth/admin/posts'
     | '/_auth/admin/series'
     | '/_auth/admin/settings'
@@ -1178,6 +1214,8 @@ export interface RootRouteChildren {
   ApiBackupsRoute: typeof ApiBackupsRoute
   ApiCommentsRoute: typeof ApiCommentsRouteWithChildren
   ApiExportRoute: typeof ApiExportRoute
+  ApiFoodSuggestionsRoute: typeof ApiFoodSuggestionsRoute
+  ApiGikoHomepageRoute: typeof ApiGikoHomepageRoute
   ApiPostsRoute: typeof ApiPostsRouteWithChildren
   ApiSearchRoute: typeof ApiSearchRoute
   ApiSeriesRoute: typeof ApiSeriesRouteWithChildren
@@ -1395,6 +1433,20 @@ declare module '@tanstack/react-router' {
       path: '/api/posts'
       fullPath: '/api/posts'
       preLoaderRoute: typeof ApiPostsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/giko-homepage': {
+      id: '/api/giko-homepage'
+      path: '/api/giko-homepage'
+      fullPath: '/api/giko-homepage'
+      preLoaderRoute: typeof ApiGikoHomepageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/food-suggestions': {
+      id: '/api/food-suggestions'
+      path: '/api/food-suggestions'
+      fullPath: '/api/food-suggestions'
+      preLoaderRoute: typeof ApiFoodSuggestionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/export': {
@@ -1754,6 +1806,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAdminPostsRouteImport
       parentRoute: typeof AuthAdminRouteRoute
     }
+    '/_auth/admin/giko-homepage': {
+      id: '/_auth/admin/giko-homepage'
+      path: '/giko-homepage'
+      fullPath: '/admin/giko-homepage'
+      preLoaderRoute: typeof AuthAdminGikoHomepageRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
     '/_auth/admin/comments': {
       id: '/_auth/admin/comments'
       path: '/comments'
@@ -1916,6 +1975,7 @@ const AuthAdminPostsRouteWithChildren = AuthAdminPostsRoute._addFileChildren(
 interface AuthAdminRouteRouteChildren {
   AuthAdminAssetsRoute: typeof AuthAdminAssetsRoute
   AuthAdminCommentsRoute: typeof AuthAdminCommentsRoute
+  AuthAdminGikoHomepageRoute: typeof AuthAdminGikoHomepageRoute
   AuthAdminPostsRoute: typeof AuthAdminPostsRouteWithChildren
   AuthAdminSeriesRoute: typeof AuthAdminSeriesRoute
   AuthAdminSettingsRoute: typeof AuthAdminSettingsRoute
@@ -1926,6 +1986,7 @@ interface AuthAdminRouteRouteChildren {
 const AuthAdminRouteRouteChildren: AuthAdminRouteRouteChildren = {
   AuthAdminAssetsRoute: AuthAdminAssetsRoute,
   AuthAdminCommentsRoute: AuthAdminCommentsRoute,
+  AuthAdminGikoHomepageRoute: AuthAdminGikoHomepageRoute,
   AuthAdminPostsRoute: AuthAdminPostsRouteWithChildren,
   AuthAdminSeriesRoute: AuthAdminSeriesRoute,
   AuthAdminSettingsRoute: AuthAdminSettingsRoute,
@@ -2128,6 +2189,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiBackupsRoute: ApiBackupsRoute,
   ApiCommentsRoute: ApiCommentsRouteWithChildren,
   ApiExportRoute: ApiExportRoute,
+  ApiFoodSuggestionsRoute: ApiFoodSuggestionsRoute,
+  ApiGikoHomepageRoute: ApiGikoHomepageRoute,
   ApiPostsRoute: ApiPostsRouteWithChildren,
   ApiSearchRoute: ApiSearchRoute,
   ApiSeriesRoute: ApiSeriesRouteWithChildren,

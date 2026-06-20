@@ -197,3 +197,56 @@ export type ApiToken = {
   revokedAt: string | null;
   createdAt: string;
 };
+
+// GIKO-Anyway custom homepage types
+
+export type LandscapePhoto = {
+  id: string;
+  imageKey: string;
+  title: string;
+  description: string;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type FoodPhoto = {
+  id: string;
+  imageKey: string;
+  title: string;
+  description: string;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type FoodSuggestion = {
+  id: string;
+  userId: string;
+  authorName: string;
+  suggestionText: string;
+  createdAt: string;
+};
+
+export type LifeGoal = {
+  id: string;
+  title: string;
+  description: string;
+  completed: boolean;
+  completedAt: string | null;
+  completionImageKey: string | null;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type GithubProject = {
+  id: string;
+  repoUrl: string;
+  repoName: string;
+  description: string;
+  starsCount: number;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+};

@@ -1,4 +1,15 @@
-import { type Comment, type Post, type Series, type SiteSettings, type Tag } from "@repo/core";
+import {
+  type Comment,
+  type Post,
+  type Series,
+  type SiteSettings,
+  type Tag,
+  type LandscapePhoto,
+  type FoodPhoto,
+  type FoodSuggestion,
+  type LifeGoal,
+  type GithubProject,
+} from "@repo/core";
 import { createServerFn } from "@tanstack/react-start";
 
 export type BlogPostPageData = {
@@ -11,10 +22,12 @@ export type BlogPostPageData = {
 
 export type HomePageData = {
   posts: Post[];
-  featuredPosts: Post[];
   siteSettings: SiteSettings;
-  tags: Tag[];
-  series: Series[];
+  landscapePhotos: LandscapePhoto[];
+  foodPhotos: FoodPhoto[];
+  foodSuggestions: FoodSuggestion[];
+  lifeGoals: LifeGoal[];
+  githubProjects: GithubProject[];
 };
 
 export type BlogIndexPageData = {
@@ -84,21 +97,40 @@ export const $getBlogPostPage = createServerFn({ method: "GET" })
 
 export const $getHomePageData = createServerFn({ method: "GET" }).handler(
   async (): Promise<HomePageData> => {
-    const { getD1SiteSettings, listD1Posts, listD1Series, listD1Tags } = await import("./cms-d1");
-    const [siteSettings, posts, featuredPosts, tags, series] = await Promise.all([
+    const { getD1SiteSettings, listD1Posts } = await import("./cms-d1");
+    const {
+      listLandscapePhotos,
+      listFoodPhotos,
+      listFoodSuggestions,
+      listLifeGoals,
+      listGithubProjects,
+    } = await import("./cms-d1-giko");
+    const [
+      siteSettings,
+      posts,
+      landscapePhotos,
+      foodPhotos,
+      foodSuggestions,
+      lifeGoals,
+      githubProjects,
+    ] = await Promise.all([
       getD1SiteSettings(),
-      listD1Posts({ limit: 12 }),
-      listD1Posts({ featured: true, limit: 3 }),
-      listD1Tags(),
-      listD1Series(),
+      listD1Posts({ limit: 20 }),
+      listLandscapePhotos(),
+      listFoodPhotos(),
+      listFoodSuggestions(),
+      listLifeGoals(),
+      listGithubProjects(),
     ]);
 
     return {
       posts,
-      featuredPosts,
       siteSettings,
-      tags,
-      series,
+      landscapePhotos,
+      foodPhotos,
+      foodSuggestions,
+      lifeGoals,
+      githubProjects,
     };
   },
 );

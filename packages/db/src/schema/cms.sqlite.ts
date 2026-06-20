@@ -288,3 +288,78 @@ export const emailBroadcasts = sqliteTable(
   },
   (table) => [index("email_broadcast_created_idx").on(table.createdAt)],
 );
+
+// GIKO-Anyway custom homepage tables
+
+export const landscapePhotos = sqliteTable(
+  "landscape_photos",
+  {
+    id: text("id").primaryKey(),
+    imageKey: text("image_key").notNull(),
+    title: text("title").notNull().default(""),
+    description: text("description").notNull().default(""),
+    sortOrder: integer("sort_order").notNull().default(0),
+    createdAt: text("created_at").notNull(),
+    updatedAt: text("updated_at").notNull(),
+  },
+  (table) => [index("landscape_photos_sort_idx").on(table.sortOrder, table.createdAt)],
+);
+
+export const foodPhotos = sqliteTable(
+  "food_photos",
+  {
+    id: text("id").primaryKey(),
+    imageKey: text("image_key").notNull(),
+    title: text("title").notNull().default(""),
+    description: text("description").notNull().default(""),
+    sortOrder: integer("sort_order").notNull().default(0),
+    createdAt: text("created_at").notNull(),
+    updatedAt: text("updated_at").notNull(),
+  },
+  (table) => [index("food_photos_sort_idx").on(table.sortOrder, table.createdAt)],
+);
+
+export const foodSuggestions = sqliteTable(
+  "food_suggestions",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => authUser.id, { onDelete: "cascade" }),
+    authorName: text("author_name").notNull(),
+    suggestionText: text("suggestion_text").notNull(),
+    createdAt: text("created_at").notNull(),
+  },
+  (table) => [index("food_suggestions_created_idx").on(table.createdAt)],
+);
+
+export const lifeGoals = sqliteTable(
+  "life_goals",
+  {
+    id: text("id").primaryKey(),
+    title: text("title").notNull(),
+    description: text("description").notNull().default(""),
+    completed: integer("completed").notNull().default(0),
+    completedAt: text("completed_at"),
+    completionImageKey: text("completion_image_key"),
+    sortOrder: integer("sort_order").notNull().default(0),
+    createdAt: text("created_at").notNull(),
+    updatedAt: text("updated_at").notNull(),
+  },
+  (table) => [index("life_goals_sort_idx").on(table.completed, table.sortOrder, table.completedAt)],
+);
+
+export const githubProjects = sqliteTable(
+  "github_projects",
+  {
+    id: text("id").primaryKey(),
+    repoUrl: text("repo_url").notNull(),
+    repoName: text("repo_name").notNull(),
+    description: text("description").notNull().default(""),
+    starsCount: integer("stars_count").notNull().default(0),
+    sortOrder: integer("sort_order").notNull().default(0),
+    createdAt: text("created_at").notNull(),
+    updatedAt: text("updated_at").notNull(),
+  },
+  (table) => [index("github_projects_sort_idx").on(table.sortOrder, table.repoName)],
+);

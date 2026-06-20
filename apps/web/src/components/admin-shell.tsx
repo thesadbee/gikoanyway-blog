@@ -7,6 +7,7 @@ import {
   ArrowLeftIcon,
   FileTextIcon,
   ImageIcon,
+  LayoutPanelLeftIcon,
   LibraryIcon,
   LockKeyholeIcon,
   MessageSquareIcon,
@@ -37,6 +38,7 @@ const adminNav = [
   { label: m.admin_nav_assets, href: "/admin/assets", icon: ImageIcon },
   { label: m.admin_nav_comments, href: "/admin/comments", icon: MessageSquareIcon },
   { label: m.admin_nav_users, href: "/admin/users", icon: UsersIcon },
+  { label: () => "首页内容", href: "/admin/giko-homepage", icon: LayoutPanelLeftIcon },
   { label: m.admin_nav_settings, href: "/admin/settings", icon: SettingsIcon },
 ];
 

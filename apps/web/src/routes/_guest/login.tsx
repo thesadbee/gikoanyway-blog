@@ -112,9 +112,7 @@ function LoginForm() {
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center gap-2">
             <Link to="/" className="flex flex-col items-center gap-2 font-medium">
-              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-xs">
-                <BookOpenIcon className="size-5" />
-              </div>
+              <div className="flex h-8 w-8 items-center justify-center text-lg">🦉</div>
               <span className="sr-only">{siteSettings.name}</span>
             </Link>
             <h1 className="text-xl font-bold">{m.login_greeting({ name: siteSettings.name })}</h1>
