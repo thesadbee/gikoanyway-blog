@@ -1,0 +1,34 @@
+{
+  "name": "GIKO-Anyway",
+  "description": "A personal blog by giko — thoughts, code, and life.",
+  "url": "https://gikoanyway.top",
+  "authorName": "giko",
+  "authorEmail": "960607518@qq.com",
+  "authorBio": "写代码，也写生活。",
+  "locales": ["en", "zh"],
+  "primaryLanguage": "zh",
+  "i18n": {
+    "name": {
+      "en": "GIKO-Anyway"
+    },
+    "description": {
+      "zh": "giko 的个人博客——技术、思考与日常。",
+      "en": "A personal blog by giko — tech, thoughts, and daily life."
+    },
+    "authorBio": {
+      "zh": "写代码，也写生活。",
+      "en": "Code, and life."
+    }
+  },
+  "i18nRuntime": "paraglide-js",
+  "themePreset": "apple",
+  "layoutPreset": "developer",
+  "commentsEnabled": true,
+  "commentsRequireApproval": true,
+  "commentAutoBlockEnabled": true,
+  "commentBlockedKeywords": ["博彩", "赌博", "色情", "诈骗", "辱骂", "violence", "scam", "spam"],
+  "emailSendingEnabled": false,
+  "emailVerificationEnabled": false,
+  "githubActionsEnabled": false,
+  "r2Enabled": false
+}
