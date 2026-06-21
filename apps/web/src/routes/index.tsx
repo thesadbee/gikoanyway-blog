@@ -26,6 +26,7 @@ function HomePage() {
         foodSuggestions={data.foodSuggestions}
         lifeGoals={data.lifeGoals}
         githubProjects={data.githubProjects}
+        contactLinks={data.contactLinks}
         locale={locale}
       />
     </SiteShell>

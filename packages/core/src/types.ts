@@ -240,6 +240,17 @@ export type LifeGoal = {
   updatedAt: string;
 };
 
+export type ContactLink = {
+  id: string;
+  platform: string;
+  logoUrl: string;
+  account: string;
+  qrCodeUrl: string;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type GithubProject = {
   id: string;
   repoUrl: string;

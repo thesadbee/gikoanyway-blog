@@ -38,6 +38,7 @@ export const Route = createFileRoute("/api/giko-homepage")({
           food_photos: { table: schema.foodPhotos, idCol: schema.foodPhotos.id },
           life_goals: { table: schema.lifeGoals, idCol: schema.lifeGoals.id },
           github_projects: { table: schema.githubProjects, idCol: schema.githubProjects.id },
+          contact_links: { table: schema.contactLinks, idCol: schema.contactLinks.id },
         };
 
         const target = tables[table];

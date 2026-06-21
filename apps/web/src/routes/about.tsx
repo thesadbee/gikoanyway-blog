@@ -1,8 +1,10 @@
 import { localizeSiteSettings } from "@repo/core";
 import { Button } from "@repo/ui/components/button";
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowRightIcon, ExternalLinkIcon, MailIcon, SparklesIcon } from "lucide-react";
+import { ArrowRightIcon, ExternalLinkIcon, SparklesIcon } from "lucide-react";
+import { useState, useCallback } from "react";
 
+import { AdminItemMenu, useIsAdmin } from "#/components/giko-homepage/admin-item-menu";
 import { SiteShell } from "#/components/site-shell";
 import { $getAboutPageData } from "#/lib/cms-server";
 import { getDocsUrl } from "#/lib/docs-i18n";
@@ -16,14 +18,14 @@ export const Route = createFileRoute("/about")({
     return {
       meta: [
         {
-          title: locale === "zh" ? "关于 01MVP 和 Jackie" : "About 01MVP and Jackie",
+          title: locale === "zh" ? "关于 giko" : "About giko",
         },
         {
           name: "description",
           content:
             locale === "zh"
-              ? "了解 01MVP 的 AI 产品实战方法，以及 MakerJackie 的项目背景。"
-              : "Learn about the 01MVP practical AI product method and MakerJackie's background.",
+              ? "了解 giko 的技术探索、项目复盘与日常生活。"
+              : "Learn about giko's tech journey, projects, and daily life.",
         },
       ],
     };
@@ -32,11 +34,23 @@ export const Route = createFileRoute("/about")({
 });
 
 function AboutPage() {
-  const data = Route.useLoaderData();
+  const data = Route.useLoaderData() as any;
   const locale = getCurrentLocale();
   const siteSettings = localizeSiteSettings(data.siteSettings, locale);
   const copy = getAboutCopy(locale);
   const docsHref = getDocsUrl([], locale);
+  const contactLinks = (data.contactLinks ?? []) as import("@repo/core").ContactLink[];
+  const [links, setLinks] = useState(contactLinks);
+  const isAdmin = useIsAdmin();
+  const handleDeleteLink = useCallback(
+    (id: string) => setLinks((prev) => prev.filter((l) => l.id !== id)),
+    [],
+  );
+  const handleUpdateLink = useCallback(
+    (id: string, values: Record<string, unknown>) =>
+      setLinks((prev) => prev.map((l) => (l.id === id ? ({ ...l, ...values } as typeof l) : l))),
+    [],
+  );
 
   return (
     <SiteShell siteSettings={siteSettings}>
@@ -72,17 +86,38 @@ function AboutPage() {
               </div>
             </div>
 
-            <aside className="border border-border bg-muted/35 p-5">
+            <aside className="group relative border border-border bg-muted/35 p-5">
               <img
-                src="/jackie-avatar.jpg"
-                alt="MakerJackie"
+                src={siteSettings.avatarUrl || "/og-default.svg"}
+                alt={siteSettings.authorName || "giko"}
                 className="aspect-square w-full object-cover"
               />
               <div className="mt-5">
-                <p className="text-sm font-semibold text-link uppercase">MakerJackie</p>
-                <p className="mt-2 text-2xl font-semibold">{copy.profileTitle}</p>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">{copy.profileBody}</p>
+                <p className="text-sm font-semibold text-link uppercase">
+                  {siteSettings.authorName || "giko"}
+                </p>
+                <p className="mt-2 text-2xl font-semibold">
+                  {(siteSettings as any).profileTitle || copy.profileTitle}
+                </p>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                  {siteSettings.authorBio || copy.profileBody}
+                </p>
               </div>
+              {isAdmin && (
+                <div className="absolute top-2 right-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const url = "/admin/giko-homepage";
+                      window.location.href = url;
+                    }}
+                    className="flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background/80 text-xs text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:bg-muted hover:text-foreground"
+                    title="编辑个人信息"
+                  >
+                    ···
+                  </button>
+                </div>
+              )}
             </aside>
           </div>
         </section>
@@ -129,22 +164,60 @@ function AboutPage() {
               ))}
             </div>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-border pt-6">
-              <a
-                href="mailto:hi@01mvp.com"
-                className="inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-link hover:underline"
-              >
-                <MailIcon className="size-4" />
-                hi@01mvp.com
-              </a>
-              <a
-                href="https://x.com/makerjackie"
-                className="inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-link hover:underline"
-              >
-                X / Twitter
-                <ExternalLinkIcon className="size-4" />
-              </a>
-            </div>
+            {links.length > 0 && (
+              <div className="mt-8 border-t border-border pt-6">
+                <h3 className="mb-4 text-sm font-semibold tracking-wide text-link uppercase">
+                  联系方式
+                </h3>
+                <div className="flex flex-wrap gap-4">
+                  {links.map((link) => (
+                    <div
+                      key={link.id}
+                      className="group relative flex min-w-[200px] items-center gap-3 rounded-lg border border-border bg-background p-4"
+                    >
+                      {link.logoUrl && (
+                        <img
+                          src={link.logoUrl}
+                          alt={link.platform}
+                          className="size-9 rounded-md object-contain"
+                        />
+                      )}
+                      <div className="min-w-0">
+                        {link.platform && (
+                          <p className="text-sm font-semibold text-foreground">{link.platform}</p>
+                        )}
+                        {link.account && (
+                          <p className="truncate text-xs text-muted-foreground">{link.account}</p>
+                        )}
+                      </div>
+                      {link.qrCodeUrl && (
+                        <img
+                          src={link.qrCodeUrl}
+                          alt={`${link.platform} QR`}
+                          className="ml-auto size-16 rounded-md border border-border"
+                        />
+                      )}
+                      {isAdmin && (
+                        <AdminItemMenu
+                          table="contact_links"
+                          itemId={link.id}
+                          currentValues={link as unknown as Record<string, unknown>}
+                          fields={[
+                            { label: "平台名称", key: "platform" },
+                            { label: "Logo URL", key: "logoUrl", type: "url" },
+                            { label: "账号", key: "account" },
+                            { label: "二维码 URL", key: "qrCodeUrl", type: "url" },
+                            { label: "排序", key: "sortOrder", type: "number" },
+                          ]}
+                          onDeleted={handleDeleteLink}
+                          onUpdated={handleUpdateLink}
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </section>
       </div>
@@ -155,47 +228,47 @@ function AboutPage() {
 function getAboutCopy(locale: ReturnType<typeof getCurrentLocale>) {
   if (locale === "zh") {
     return {
-      eyebrow: "关于 01MVP",
-      title: "把模糊想法，做成能上线的小产品。",
-      description:
-        "01MVP 是 Jackie 持续整理的 AI 产品实战手册。它关注从选择问题、搭建第一版、上线验证，到根据反馈继续迭代的完整路径。",
-      primaryAction: "开始阅读手册",
-      secondaryAction: "查看作品集",
-      profileTitle: "独立开发者，前 AI 算法工程师",
-      profileBody: "Jackie 是周周黑客松社区发起人，也长期记录 AI 创作、产品实验和可复用模板。",
-      whyEyebrow: "方法",
-      whyTitle: "这套手册强调什么",
+      eyebrow: "关于我",
+      title: "写代码，也写生活。",
+      description: "这里是 giko 的个人博客。记录技术探索、日常思考、旅行风景和厨房实验。",
+      primaryAction: "阅读博客",
+      secondaryAction: "GitHub",
+      profileTitle: "北航准研究生 · 机器人工程",
+      profileBody:
+        "giko，2026 届本科毕业生，即将赴北京航空航天大学攻读研究生。热衷于仿生机器人、数字孪生和视觉伺服。业余时间喜欢摄影、烹饪和开源。",
+      whyEyebrow: "免责声明",
+      whyTitle: "阅读须知",
       principles: [
         {
-          title: "先做出来",
-          description: "先用一个小项目建立手感，再通过上线后的反馈判断下一步。",
+          title: "试图在这篇故事里寻找动机者将被起诉",
+          description: "",
         },
         {
-          title: "少踩坑",
-          description: "优先讲值得先学、能直接上手、能被真实项目验证的工具和方法。",
+          title: "试图寻找寓意者将被放逐",
+          description: "",
         },
         {
-          title: "面向交付",
-          description: "把 Demo 作为阶段检查点，继续推进到发布、反馈和下一轮迭代。",
+          title: "试图从中寻找阴谋者将被枪毙",
+          description: "",
         },
       ],
       paths: [
         {
-          eyebrow: "Start",
-          title: "读 01MVP 手册",
-          description: "按从想法到上线的路径建立完整工作流。",
-          href: getDocsUrl([], "zh"),
+          eyebrow: "Blog",
+          title: "浏览文章",
+          description: "技术笔记、项目复盘和生活记录。",
+          href: "/blog",
         },
         {
-          eyebrow: "Work",
-          title: "看 MakerJackie 作品",
-          description: "查看 Jackie 做过的产品、公开实验和长期项目。",
-          href: "https://makerjackie.com",
+          eyebrow: "Project",
+          title: "GitHub 项目",
+          description: "我发布的开源项目和实验代码。",
+          href: "https://github.com/thesadbee",
         },
         {
-          eyebrow: "Template",
-          title: "回到博客模板",
-          description: "了解这个 Cloudflare 原生博客模板如何部署和维护。",
+          eyebrow: "Photos",
+          title: "风景与美食",
+          description: "用镜头记录走过的路和做过的菜。",
           href: "/",
         },
       ],
@@ -203,52 +276,48 @@ function getAboutCopy(locale: ReturnType<typeof getCurrentLocale>) {
   }
 
   return {
-    eyebrow: "About 01MVP",
-    title: "Turning rough ideas into small products that can ship.",
+    eyebrow: "About Me",
+    title: "Code, and life.",
     description:
-      "01MVP is Jackie’s practical AI product handbook. It focuses on choosing a real problem, building the first version, launching, collecting feedback, and deciding what to do next.",
-    primaryAction: "Start reading",
-    secondaryAction: "View portfolio",
-    profileTitle: "Independent developer and former AI algorithm engineer",
+      "This is giko’s personal blog — a space for tech exploration, daily thoughts, travel snapshots, and kitchen experiments.",
+    primaryAction: "Read Blog",
+    secondaryAction: "GitHub",
+    profileTitle: "Beihang Grad Student · Robotics Engineering",
     profileBody:
-      "Jackie founded Hackathon Weekly and keeps publishing AI creation notes, product experiments, and reusable templates.",
-    whyEyebrow: "Method",
-    whyTitle: "What this handbook emphasizes",
+      "giko, Class of 2026, heading to Beihang University for graduate studies. Passionate about bionic robotics, digital twins, and visual servoing. Enjoys photography, cooking, and open source in spare time.",
+    whyEyebrow: "Disclaimer",
+    whyTitle: "A Note to Readers",
     principles: [
       {
-        title: "Ship the first version",
-        description:
-          "Use a small project to build product muscle, then let real feedback guide the next step.",
+        title: "Persons attempting to find a motive in this narrative will be prosecuted",
+        description: "",
       },
       {
-        title: "Avoid the expensive detours",
-        description:
-          "Prioritize tools and methods that are worth learning early and can be used in real projects.",
+        title: "Persons attempting to find a moral in it will be banished",
+        description: "",
       },
       {
-        title: "Stay close to delivery",
-        description:
-          "Treat the demo as a checkpoint, then move the work toward launch, feedback, and iteration.",
+        title: "Persons attempting to find a plot in it will be shot",
+        description: "",
       },
     ],
     paths: [
       {
-        eyebrow: "Start",
-        title: "Read the 01MVP handbook",
-        description: "Follow the path from idea to launch and build a complete working loop.",
-        href: getDocsUrl([], "en"),
+        eyebrow: "Blog",
+        title: "Read Articles",
+        description: "Tech notes, project retrospectives, and life updates.",
+        href: "/blog",
       },
       {
-        eyebrow: "Work",
-        title: "View MakerJackie projects",
-        description:
-          "Browse products, public experiments, and long-running projects Jackie has built.",
-        href: "https://makerjackie.com",
+        eyebrow: "Project",
+        title: "GitHub Projects",
+        description: "Open source projects and experimental code.",
+        href: "https://github.com/thesadbee",
       },
       {
-        eyebrow: "Template",
-        title: "Return to the blog template",
-        description: "See how this Cloudflare-native blog template is deployed and maintained.",
+        eyebrow: "Photos",
+        title: "Landscape & Food",
+        description: "Places I’ve been and dishes I’ve made, captured through the lens.",
         href: "/",
       },
     ],

@@ -9,6 +9,7 @@ import {
   type FoodSuggestion,
   type LifeGoal,
   type GithubProject,
+  type ContactLink,
 } from "@repo/core";
 import { createServerFn } from "@tanstack/react-start";
 
@@ -28,6 +29,7 @@ export type HomePageData = {
   foodSuggestions: FoodSuggestion[];
   lifeGoals: LifeGoal[];
   githubProjects: GithubProject[];
+  contactLinks: ContactLink[];
 };
 
 export type BlogIndexPageData = {
@@ -104,6 +106,7 @@ export const $getHomePageData = createServerFn({ method: "GET" }).handler(
       listFoodSuggestions,
       listLifeGoals,
       listGithubProjects,
+      listContactLinks,
     } = await import("./cms-d1-giko");
     const [
       siteSettings,
@@ -113,6 +116,7 @@ export const $getHomePageData = createServerFn({ method: "GET" }).handler(
       foodSuggestions,
       lifeGoals,
       githubProjects,
+      contactLinks,
     ] = await Promise.all([
       getD1SiteSettings(),
       listD1Posts({ limit: 20 }),
@@ -121,6 +125,7 @@ export const $getHomePageData = createServerFn({ method: "GET" }).handler(
       listFoodSuggestions(),
       listLifeGoals(),
       listGithubProjects(),
+      listContactLinks(),
     ]);
 
     return {
@@ -131,6 +136,7 @@ export const $getHomePageData = createServerFn({ method: "GET" }).handler(
       foodSuggestions,
       lifeGoals,
       githubProjects,
+      contactLinks,
     };
   },
 );
@@ -269,11 +275,13 @@ export const $getSiteSettingsPageData = createServerFn({ method: "GET" }).handle
 );
 
 export const $getAboutPageData = createServerFn({ method: "GET" }).handler(
-  async (): Promise<AboutPageData> => {
+  async (): Promise<AboutPageData & { contactLinks: import("@repo/core").ContactLink[] }> => {
     const { getD1SiteSettings } = await import("./cms-d1");
+    const { listContactLinks } = await import("./cms-d1-giko");
 
     return {
       siteSettings: await getD1SiteSettings(),
+      contactLinks: await listContactLinks(),
     };
   },
 );

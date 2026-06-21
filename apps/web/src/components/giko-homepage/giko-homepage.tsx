@@ -1,14 +1,16 @@
 import type {
-  Post,
-  LandscapePhoto,
+  ContactLink,
   FoodPhoto,
   FoodSuggestion,
-  LifeGoal,
   GithubProject,
+  LandscapePhoto,
+  LifeGoal,
+  Post,
   SupportedLocale,
 } from "@repo/core";
 
 import { BlogPostsFeed } from "./blog-posts-feed";
+import { ContactStrip } from "./contact-strip";
 import { FoodShowcase } from "./food-showcase";
 import { GithubProjects } from "./github-projects";
 import { HomeHeader } from "./home-header";
@@ -23,6 +25,7 @@ interface GikoHomepageProps {
   foodSuggestions: FoodSuggestion[];
   lifeGoals: LifeGoal[];
   githubProjects: GithubProject[];
+  contactLinks: ContactLink[];
   locale: SupportedLocale;
 }
 
@@ -33,6 +36,7 @@ export function GikoHomepage({
   foodSuggestions,
   lifeGoals,
   githubProjects,
+  contactLinks,
   locale,
 }: GikoHomepageProps) {
   return (
@@ -53,6 +57,9 @@ export function GikoHomepage({
           </>
         }
       />
+      <div className="mt-8 pb-12">
+        <ContactStrip links={contactLinks} />
+      </div>
     </div>
   );
 }

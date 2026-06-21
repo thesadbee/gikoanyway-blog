@@ -285,6 +285,7 @@ export function normalizeSiteSettings(
     authorName: cleanString(input.authorName, base.authorName),
     authorBio: cleanString(input.authorBio, base.authorBio),
     avatarUrl: cleanString(input.avatarUrl, base.avatarUrl),
+    profileTitle: cleanString((input as any).profileTitle, (base as any).profileTitle),
     defaultOgImage: cleanString(input.defaultOgImage, base.defaultOgImage),
     socialLinks: Array.isArray(input.socialLinks) ? input.socialLinks : base.socialLinks,
     navigation: Array.isArray(input.navigation) ? input.navigation : base.navigation,

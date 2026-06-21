@@ -349,6 +349,21 @@ export const lifeGoals = sqliteTable(
   (table) => [index("life_goals_sort_idx").on(table.completed, table.sortOrder, table.completedAt)],
 );
 
+export const contactLinks = sqliteTable(
+  "contact_links",
+  {
+    id: text("id").primaryKey(),
+    platform: text("platform").notNull().default(""),
+    logoUrl: text("logo_url").notNull().default(""),
+    account: text("account").notNull().default(""),
+    qrCodeUrl: text("qr_code_url").notNull().default(""),
+    sortOrder: integer("sort_order").notNull().default(0),
+    createdAt: text("created_at").notNull(),
+    updatedAt: text("updated_at").notNull(),
+  },
+  (table) => [index("contact_links_sort_idx").on(table.sortOrder, table.platform)],
+);
+
 export const githubProjects = sqliteTable(
   "github_projects",
   {

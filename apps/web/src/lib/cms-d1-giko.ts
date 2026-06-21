@@ -1,4 +1,5 @@
 import type {
+  ContactLink,
   LandscapePhoto,
   FoodPhoto,
   FoodSuggestion,
@@ -152,6 +153,30 @@ function drizzleRowToGithubProject(row: typeof schema.githubProjects.$inferSelec
     repoName: row.repoName,
     description: row.description,
     starsCount: row.starsCount,
+    sortOrder: row.sortOrder,
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
+  };
+}
+
+// ── Contact Links ──
+
+export async function listContactLinks(): Promise<ContactLink[]> {
+  const db = getCmsDb();
+  const rows = await db
+    .select()
+    .from(schema.contactLinks)
+    .orderBy(asc(schema.contactLinks.sortOrder), asc(schema.contactLinks.platform));
+  return rows.map(drizzleRowToContactLink);
+}
+
+function drizzleRowToContactLink(row: typeof schema.contactLinks.$inferSelect): ContactLink {
+  return {
+    id: row.id,
+    platform: row.platform,
+    logoUrl: row.logoUrl,
+    account: row.account,
+    qrCodeUrl: row.qrCodeUrl,
     sortOrder: row.sortOrder,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,

@@ -6,13 +6,21 @@ export const Route = createFileRoute("/_auth/admin/giko-homepage")({
   component: GikoHomepageAdmin,
 });
 
-type Section = "landscape_photos" | "food_photos" | "life_goals" | "github_projects";
+type Section =
+  | "landscape_photos"
+  | "food_photos"
+  | "life_goals"
+  | "github_projects"
+  | "contact_links"
+  | "about_me";
 
 const SECTION_LABELS: Record<Section, string> = {
   landscape_photos: " 风景照",
   food_photos: " 美食照",
   life_goals: " 人生计划",
   github_projects: " GitHub 项目",
+  contact_links: " 联系方式",
+  about_me: " 关于我",
 };
 
 const SECTION_FIELDS: Record<Section, { label: string; key: string; type?: string }[]> = {
@@ -42,11 +50,122 @@ const SECTION_FIELDS: Record<Section, { label: string; key: string; type?: strin
     { label: "Star数", key: "starsCount", type: "number" },
     { label: "排序", key: "sortOrder", type: "number" },
   ],
+  contact_links: [
+    { label: "平台名称", key: "platform" },
+    { label: "Logo URL", key: "logoUrl", type: "url" },
+    { label: "账号", key: "account" },
+    { label: "二维码 URL", key: "qrCodeUrl", type: "url" },
+    { label: "排序", key: "sortOrder", type: "number" },
+  ],
 };
 
 function GikoHomepageAdmin() {
   const [section, setSection] = useState<Section>("landscape_photos");
   const [status, setStatus] = useState("");
+  const [aboutStatus, setAboutStatus] = useState("");
+
+  if (section === "about_me") {
+    const handleAboutSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const form = e.currentTarget;
+      const avatarUrl = (form.elements.namedItem("avatarUrl") as HTMLInputElement).value.trim();
+      const authorName = (form.elements.namedItem("authorName") as HTMLInputElement).value.trim();
+      const profileTitleZh = (
+        form.elements.namedItem("profileTitleZh") as HTMLInputElement
+      ).value.trim();
+      const authorBioZh = (
+        form.elements.namedItem("authorBioZh") as HTMLTextAreaElement
+      ).value.trim();
+      const authorBioEn = (
+        form.elements.namedItem("authorBioEn") as HTMLTextAreaElement
+      ).value.trim();
+      setAboutStatus("保存中…");
+      try {
+        const resp = await fetch("/api/site", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({
+            avatarUrl,
+            authorName,
+            authorBio: authorBioZh,
+            profileTitle: profileTitleZh,
+            i18n: { authorBio: { en: authorBioEn || undefined } },
+          }),
+        });
+        if (!resp.ok) throw new Error("Failed");
+        setAboutStatus("✅ 已保存！");
+      } catch {
+        setAboutStatus("❌ 保存失败");
+      }
+    };
+
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-8">
+        <h1 className="mb-6 text-2xl font-bold">编辑首页内容</h1>
+        <AboutTabButtons section={section} setSection={setSection} setStatus={setAboutStatus} />
+        <form
+          onSubmit={handleAboutSubmit}
+          className="space-y-4 rounded-lg border border-border p-6"
+        >
+          <h2 className="text-lg font-semibold">编辑关于我</h2>
+          <label className="flex flex-col gap-1 text-sm">
+            <span className="font-medium text-muted-foreground">头像 URL</span>
+            <input
+              name="avatarUrl"
+              type="url"
+              className="rounded-md border border-border bg-background px-3 py-2 text-foreground"
+              placeholder="https://gikoanyway.top/uploads/..."
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-sm">
+            <span className="font-medium text-muted-foreground">名字</span>
+            <input
+              name="authorName"
+              type="text"
+              className="rounded-md border border-border bg-background px-3 py-2 text-foreground"
+              placeholder="giko"
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-sm">
+            <span className="font-medium text-muted-foreground">身份/角色（中文）</span>
+            <input
+              name="profileTitleZh"
+              type="text"
+              className="rounded-md border border-border bg-background px-3 py-2 text-foreground"
+              placeholder="北航准研究生 · 机器人工程"
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-sm">
+            <span className="font-medium text-muted-foreground">个人简介（中文）</span>
+            <textarea
+              name="authorBioZh"
+              rows={3}
+              className="rounded-md border border-border bg-background px-3 py-2 text-foreground"
+              placeholder="写代码，也写生活。"
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-sm">
+            <span className="font-medium text-muted-foreground">Bio (English)</span>
+            <textarea
+              name="authorBioEn"
+              rows={3}
+              className="rounded-md border border-border bg-background px-3 py-2 text-foreground"
+              placeholder="Code, and life."
+            />
+          </label>
+          <button
+            type="submit"
+            className="rounded-md bg-blue-600 px-6 py-2 font-medium text-white hover:bg-blue-700"
+          >
+            保存
+          </button>
+          {aboutStatus && <p className="mt-2 text-sm">{aboutStatus}</p>}
+        </form>
+        <HintBox />
+      </div>
+    );
+  }
 
   const fields = SECTION_FIELDS[section];
 
@@ -154,6 +273,57 @@ function GikoHomepageAdmin() {
           编辑/删除已有条目：目前通过 D1 控制台或 API 操作。如需页面管理界面请告诉我再添加。
         </p>
       </div>
+    </div>
+  );
+}
+
+function AboutTabButtons({
+  section,
+  setSection,
+  setStatus,
+}: {
+  section: Section;
+  setSection: (s: Section) => void;
+  setStatus: (v: string) => void;
+}) {
+  return (
+    <div className="mb-6 flex flex-wrap gap-2">
+      {(Object.keys(SECTION_LABELS) as Section[]).map((s) => (
+        <button
+          key={s}
+          type="button"
+          onClick={() => {
+            setSection(s);
+            setStatus("");
+          }}
+          className={`rounded-md border px-4 py-2 text-sm font-medium ${
+            s === section
+              ? "border-primary bg-primary text-primary-foreground"
+              : "border-border bg-background text-foreground hover:bg-muted"
+          }`}
+        >
+          {SECTION_LABELS[s]}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function HintBox() {
+  return (
+    <div className="mt-6 rounded-lg border border-border p-4 text-sm text-muted-foreground">
+      <p>
+        {" "}
+        提示：图片上传请先到{" "}
+        <a href="/admin/assets" className="underline">
+          资源管理
+        </a>{" "}
+        上传至 R2，复制得到的 URL 填入上方表单的「图片URL」字段。
+      </p>
+      <p className="mt-1">
+        {" "}
+        编辑/删除已有条目：鼠标悬停在首页各条目上，点击右上角「···」即可编辑或删除。
+      </p>
     </div>
   );
 }

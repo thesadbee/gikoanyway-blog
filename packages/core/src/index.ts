@@ -50,6 +50,7 @@ export type {
   FoodSuggestion,
   LifeGoal,
   GithubProject,
+  ContactLink,
 } from "./types";
 
 export function resolveLocale(locale?: string): SupportedLocale {
